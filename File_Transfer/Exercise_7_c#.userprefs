@@ -1,1 +1,21 @@
-﻿<Properties StartupItem="file_client/file_client.csproj" />
+﻿<Properties StartupItem="file_client/file_client.csproj">
+  <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug|x86" />
+  <MonoDevelop.Ide.Workbench>
+    <Pads>
+      <Pad Id="ProjectPad">
+        <State name="__root__">
+          <Node name="Exercise_7_c#" expanded="True">
+            <Node name="file_client" expanded="True">
+              <Node name="FileClient.cs" selected="True" />
+            </Node>
+            <Node name="file_server" expanded="True" />
+          </Node>
+        </State>
+      </Pad>
+    </Pads>
+  </MonoDevelop.Ide.Workbench>
+  <MonoDevelop.Ide.DebuggingService.Breakpoints>
+    <BreakpointStore />
+  </MonoDevelop.Ide.DebuggingService.Breakpoints>
+  <MonoDevelop.Ide.DebuggingService.PinnedWatches />
+</Properties>

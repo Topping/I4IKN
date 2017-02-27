@@ -1,4 +1,12 @@
-﻿using System;
+﻿/* TODO 
+ * Få opdateret så de parametre man taster ind i commandline rent faktisk er til den fil man vil have.
+ * I stedet for hard coded
+ * 
+ * Få fixet filnavnet til den fil der bliver kopieret over, så det ikke bare er "copy.txt"
+ */
+
+
+using System;
 using System.IO;
 using System.Net;
 using System.Net.Sockets;
@@ -15,6 +23,8 @@ namespace file_client
 
 		public FileClient (string[] args)
 		{
+			Console.WriteLine ("ClientProgram :: Starting new client");
+			Console.WriteLine ("ClientProgram :: Attempting to connect to: {0}:9000", args[0]);
 			_hostIP = args [0];
 			_filename = args [1];
 			_clientSocket.Connect (_hostIP, 9000);
@@ -43,18 +53,20 @@ namespace file_client
 			NetworkStream serverStream = _clientSocket.GetStream ();
 			System.Threading.Thread.Sleep (1000);
 			LIB.writeTextTCP (serverStream, _filename);
-			BinaryReader binaryReader = new BinaryReader (serverStream);
-			BinaryWriter binaryWriter = new BinaryWriter(File.Open(fileName, FileMode.Create));
-			byte[] buffer;
-			buffer = binaryReader.ReadBytes (1000);
-			Console.WriteLine ("Buffer length after initial read: {0}", buffer.Length);
-			int fileOffset = 0;// Første 2 bytes = længde på buffer + null
-			while (buffer.Length > 0) 
-			{
-				Console.WriteLine (buffer.Length);
-				binaryWriter.Write (buffer, fileOffset, buffer.Length-fileOffset);
-				buffer = binaryReader.ReadBytes (1000);
-			}
+			byte[] buffer = new byte[4096];
+			FileStream fileWriter = new FileStream ("/root/Documents/copy.txt", FileMode.Create);
+			int expectedNumOfBytes = int.Parse(LIB.readTextTCP(serverStream));
+			int totalBytesRead = 0;
+			int thisTransferBytesRead = 0;
+			do {
+				thisTransferBytesRead = serverStream.Read (buffer, 0, buffer.Length);
+				if (thisTransferBytesRead > 0) {
+					Console.WriteLine ("ClientProgram :: Read {0} Bytes from Network Stream...", thisTransferBytesRead);
+					fileWriter.Write(buffer, 0, thisTransferBytesRead);
+					totalBytesRead += thisTransferBytesRead;
+				}
+			} while(serverStream.DataAvailable || expectedNumOfBytes != totalBytesRead);
+			Console.WriteLine ("ClientProgram :: Done reading {0} KB from Network Stream", totalBytesRead / 1000);
 			serverStream.Close ();
 			_clientSocket.Close ();
 
