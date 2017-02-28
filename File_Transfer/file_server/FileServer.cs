@@ -33,6 +33,7 @@ namespace file_server
 			Console.WriteLine (">> Waiting for new connection...");
 			_clientSocket = _serverSocket.AcceptTcpClient ();
 			Console.WriteLine (">> Client with IP: {0} connected to the server", _clientSocket.Client.RemoteEndPoint.ToString());
+			Send_en_fil_FINDETNAVN ();
 		}
 
 		public void CloseConnection()
@@ -46,19 +47,19 @@ namespace file_server
 			using (	NetworkStream networkStream = _clientSocket.GetStream() ) 
 			{
 				string filename = LIB.readTextTCP (networkStream);
-				if (File.Exists (filename)) 
-				{
+				if (File.Exists (filename)) {
 					FileStream fileReader = new FileStream (filename, FileMode.Open, FileAccess.Read, FileShare.ReadWrite);
 					BufferedStream bufferStream = new BufferedStream (fileReader, _bufferSize);
 					LIB.writeTextTCP (networkStream, fileReader.Length.ToString ());
 					do {
-						bufferStream.CopyTo(networkStream);
+						bufferStream.CopyTo (networkStream);
 					} while (fileReader.Position != fileReader.Length);
+				} else {
+					LIB.writeTextTCP (networkStream, "0");
 				}
-
-
 			}
 			CloseConnection ();
+			WaitNewConnection ();
 		}
 
 

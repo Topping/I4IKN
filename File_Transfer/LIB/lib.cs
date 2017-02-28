@@ -38,9 +38,9 @@ namespace tcp
 		{
 	        String line = "";
 	        char ch;
-	        
-	        while((ch = (char)io.ReadByte()) != 0)
-	        	line += ch;
+			while ((ch = (char)io.ReadByte ()) != 0) {
+				line += ch;
+			}
 
 	        return line;
 		}

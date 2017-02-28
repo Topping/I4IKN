@@ -17,7 +17,6 @@ namespace file_server
 			Console.WriteLine ("Server starts...");
 			FileServer fileServer = new FileServer (9000);
 			fileServer.WaitNewConnection ();
-			fileServer.Send_en_fil_FINDETNAVN ();
 		}
 	}
 }

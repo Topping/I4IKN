@@ -17,7 +17,8 @@ namespace file_client
 	public class FileClient
 	{
 		string _hostIP;
-		string _filename;
+		string _fileOnServer;
+		string _fileDestination;
 
 		TcpClient _clientSocket = new TcpClient();
 
@@ -26,9 +27,15 @@ namespace file_client
 			Console.WriteLine ("ClientProgram :: Starting new client");
 			Console.WriteLine ("ClientProgram :: Attempting to connect to: {0}:9000", args[0]);
 			_hostIP = args [0];
-			_filename = args [1];
-			_clientSocket.Connect (_hostIP, 9000);
+			_fileOnServer = args [1];
+			_fileDestination = Path.Combine (args [2], Path.GetFileName (_fileOnServer));
 			Console.WriteLine ("ClientProgram :: Client conncted to host at: {0}:9000", _hostIP);
+		}
+
+		public void ConnectToServer()
+		{
+			_clientSocket.Connect(_hostIP, 9000);
+
 		}
 
 		/// <summary>
@@ -48,28 +55,31 @@ namespace file_client
 		/// <param name='io'>
 		/// Network stream for reading from the server
 		/// </param>
-		public void receiveFile (string fileName)
+		public void receiveFile ()
 		{
 			NetworkStream serverStream = _clientSocket.GetStream ();
-			System.Threading.Thread.Sleep (1000);
-			LIB.writeTextTCP (serverStream, _filename);
-			byte[] buffer = new byte[4096];
-			FileStream fileWriter = new FileStream ("/root/Documents/copy.txt", FileMode.Create);
-			int expectedNumOfBytes = int.Parse(LIB.readTextTCP(serverStream));
+			serverStream.ReadTimeout = 10;
+			LIB.writeTextTCP (serverStream, _fileOnServer);
+			byte[] buffer = new byte[1000];
+			FileStream fileWriter = new FileStream (_fileDestination, FileMode.Create);
+			int expectedNumOfBytes;
+			int.TryParse(LIB.readTextTCP(serverStream), out expectedNumOfBytes);
+			Console.WriteLine ("ExpectedNumOfBytes :: {0}", expectedNumOfBytes);
 			int totalBytesRead = 0;
 			int thisTransferBytesRead = 0;
-			do {
-				thisTransferBytesRead = serverStream.Read (buffer, 0, buffer.Length);
-				if (thisTransferBytesRead > 0) {
-					Console.WriteLine ("ClientProgram :: Read {0} Bytes from Network Stream...", thisTransferBytesRead);
-					fileWriter.Write(buffer, 0, thisTransferBytesRead);
+			if (expectedNumOfBytes > 0) {
+				do {
+					thisTransferBytesRead = serverStream.Read (buffer, 0, buffer.Length);
+					if (thisTransferBytesRead == 0)				
+						break;
+					
+					fileWriter.Write (buffer, 0, thisTransferBytesRead);
 					totalBytesRead += thisTransferBytesRead;
-				}
-			} while(serverStream.DataAvailable || expectedNumOfBytes != totalBytesRead);
+				} while(serverStream.DataAvailable || expectedNumOfBytes != totalBytesRead);
+			}
 			Console.WriteLine ("ClientProgram :: Done reading {0} KB from Network Stream", totalBytesRead / 1000);
 			serverStream.Close ();
 			_clientSocket.Close ();
-
 		}
 
 	}
