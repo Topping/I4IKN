@@ -1,0 +1,56 @@
+\section{Resultater}
+Løsningen testes med to forskellige filer. En stor .txt fil, samt et billede. Disse sendes fra den virtuelle maskine, til windows host maskinen. Text filen inkluderes ikke grundet dens størrelse. \\
+
+Proceduren er som følger:
+\begin{enumerate}
+	\item Server startes på den virtuelle maskine.
+	\item Klient startes på host maskinen. Med de ønskede parametre.
+	\item Filerne sammenlignes vha. diff -s kommandoen.
+\end{enumerate}
+
+\subsection{Overførsel af Billede}
+På listing \ref{lst:consoleWinJpg} vises klient outputtet på windows hosten, ved overførsel af hotdog.jpg. På listing \ref{lst:compareJpg} vises resultatet fra sammenligning af de to filer.
+
+\begin{lstlisting}[caption=Konsol fra windows klient, label=lst:consoleWinJpg]
+file_client.exe 192.168.92.129 /root/Documents/hotdog.jpg C:\Users\nikol\Pictures\
+Client starts...
+ClientProgram :: Starting new client
+ClientProgram :: Attempting to connect to: 192.168.92.129:9000
+ClientProgram :: Client conncted to host at: 192.168.92.129:9000
+ExpectedNumOfBytes :: 363876
+ClientProgram :: Done reading 363 KB from Network Stream
+\end{lstlisting}
+
+\begin{lstlisting}[caption=Konsol output fra sammenligning, label=lst:compareJpg]
+	diff -s hotdog.jpg hotdog_copy.jpg
+	Files hotdog.jpg and hotdog_copy.jpg are identical
+\end{lstlisting}
+
+\begin{figure}[ht]
+	\centering
+	\includegraphics[width=.5\textwidth]{TCP/hotdog.jpg}
+	\caption{Test billede}
+	\label{fig:hotdog}
+\end{figure}
+
+\newpage
+\subsection{Overførsel af Tekstdokument}
+På listing \ref{lst:consoleWinTxt} vises klient outputtet på windows hosten, ved overførsel af test.txt. På listing \ref{lst:compareTxt} vises resultatet fra sammenligning af de to filer.
+\begin{lstlisting}[caption=Konsol output fra windows klient, label=lst:consoleWinTxt]
+	file_client.exe 192.168.92.129 /root/Documents/test.txt C:\Users\nikol\Pictures\
+	Client starts...
+	ClientProgram :: Starting new client
+	ClientProgram :: Attempting to connect to: 192.168.92.129:9000
+	ClientProgram :: Client conncted to host at: 192.168.92.129:9000
+	ExpectedNumOfBytes :: 84704122
+	ClientProgram :: Done reading 84704 KB from Network Stream
+\end{lstlisting}
+
+\begin{lstlisting}[caption=Konsol output fra sammenligning, label=lst:compareTxt]
+	diff -s test.txt test_copy.txt
+	Files test.txt and test_copy.txt are identical
+\end{lstlisting}
+
+\section{Konklusion}
+Løsningen er testet med to forskellige filtyper, i to forskellige størrelsesordener. Ved begge tests overføres filen korrekt.
+
