@@ -6,8 +6,8 @@ using tcp;
 
 namespace file_client
 {
-	public class FileClient
-	{
+public class FileClient
+{
 string _hostIP;
 string _fileOnServer;
 string _fileDestination;
@@ -21,12 +21,12 @@ public FileClient (string[] args)
 	_hostIP = args [0];
 	_fileOnServer = args [1];
 	_fileDestination = Path.Combine (args [2], Path.GetFileName (_fileOnServer));
-	Console.WriteLine ("ClientProgram :: Client conncted to host at: {0}:9000", _hostIP);
 }
 
 public void ConnectToServer()
 {
 	_clientSocket.Connect(_hostIP, 9000);
+	Console.WriteLine ("ClientProgram :: Client conncted to host at: {0}:9000", _hostIP);
 }
 
 public void receiveFile ()

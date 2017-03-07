@@ -1,5 +1,21 @@
 \section{TCP Client}
 Klienten startes vha. kommandolinjen, hvor der inputtes fileserverens IP addresse samt det ønskede filnavn. \\ \textit{./file\_client.exe  <file\_server’s ip-adr.> <[sti] + filnavn>} \\
 
-Disse parametre passes til fil klientens constructor. På 
-\lstinputlisting[caption=File Client Constructor,label=lst:FileClient,firstline=17,lastline=25]{TCP/Code/FileClient.cs}
+Disse parametre passes til fil klientens constructor. På listing \ref{lst:FileClient} ses constructoren for FileClient. Her udskrives hvilken IP der forbindes til og filedestinationen bliver sammensat.
+\lstinputlisting[caption=File Client Constructor,label=lst:FileClient,firstline=17,lastline=24]{TCP/Code/FileClient.cs}
+
+\subsection{Receive File}
+For at modtage filen bruges en NetworkStream til kommunikation via netværket, og en FileStream til at skrive filen ned til disken. Ud over det benyttes et byte array som buffer. Funktionaliteten for ReceiveFile følger sekvensen herunder, koden vises på \ref{lst:fcReceive}
+
+\begin{enumerate}
+	\item Læs forventet antal bytes fra serveren
+	\item Læs bytes indtil bufferen er fuld.
+	\begin{itemize}
+		\item Antallet af læste bytes gemmes
+	\end{itemize}
+	\item Benyt FileStreamen til at skrive det læste antal bytes til en fil.
+	\item Tilføj det læste antal bytes til det totale antal bytes.
+	\item Hvis det totale antal læste bytes svarer til det forventede, er overførslen færdig.
+\end{enumerate}
+\newpage
+\lstinputlisting[caption=Receive File, label=lst:fcReceive, firstline=44,lastline=53]{TCP/Code/FileClient.cs}
