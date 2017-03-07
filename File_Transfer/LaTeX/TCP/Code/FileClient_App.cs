@@ -4,12 +4,6 @@ namespace file_client
 {
 	public class FileClient_App
 	{
-		public FileClient_App ()
-		{
-			
-		}
-
-
 		public static void Main(string[] args)
 		{
 			Console.WriteLine ("Client starts...");
