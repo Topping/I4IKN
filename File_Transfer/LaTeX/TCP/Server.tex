@@ -1,0 +1,8 @@
+\section{Server}
+
+Serveren er udviklet til at modtage en tekststreng fra en client. Denne tekststreng indeholder navnet på en fil, som client ønsker at modtage fra serveren. Hvis filen ikke findes på serveren, så sendes en fejl besked til clienten.
+Den ønskede fil skal sendes i segmenter af 1000 bytes ad gangen, indtil filen er overført. \\
+
+Her ses constructoren for serveren \ref{lst:FileServer}
+\lstinputlisting[caption=Code Snippet fra File Server,label=lst:FileServer,firstline=16,lastline=22]{TCP/Code/FileServer.cs}
+
