@@ -13,7 +13,7 @@ public class FileServer
 	private TcpClient _clientSocket = new TcpClient();
 }
 
-public FileServer(int port, int buffersize = 4096)
+public FileServer(int port, int buffersize = 1000)
 {
 	_bufferSize = buffersize;
 	_serverSocket = new TcpListener (port);
@@ -26,7 +26,7 @@ public void WaitNewConnection()
 	Console.WriteLine (">> Waiting for new connection...");
 	_clientSocket = _serverSocket.AcceptTcpClient ();
 	Console.WriteLine (">> Client with IP: {0} connected to the server", _clientSocket.Client.RemoteEndPoint.ToString());
-	Send_en_fil_FINDETNAVN ();
+	SendFile ();
 }
 
 public void CloseConnection()
@@ -35,7 +35,7 @@ public void CloseConnection()
 	Console.WriteLine (">> Connection to client closed.");
 }
 
-public void Send_file()
+public void SendFile()
 {
 	using (	NetworkStream networkStream = _clientSocket.GetStream() ) 
 	{
