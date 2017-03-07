@@ -35,7 +35,7 @@ public void CloseConnection()
 	Console.WriteLine (">> Connection to client closed.");
 }
 
-public void Send_en_fil_FINDETNAVN()
+public void Send_file()
 {
 	using (	NetworkStream networkStream = _clientSocket.GetStream() ) 
 	{
