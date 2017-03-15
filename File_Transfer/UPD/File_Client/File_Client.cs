@@ -12,13 +12,13 @@ namespace File_Client
 		public File_Client (string[] args)
 		{
 		    _hostIp = args[0];
-		    _udpClient = new UdpClient(9000);
+		    _udpClient = new UdpClient(11000);
 		}
 
 	    public void SendCommand()
 	    {
+			_udpClient.Connect(_hostIp,9000);
 	        string cmdToSend = Console.ReadLine();
-            _udpClient.Connect(_hostIp,9000);
 	        Byte[] bytesToSend = Encoding.ASCII.GetBytes(cmdToSend);
 	        _udpClient.Send(bytesToSend, bytesToSend.Length);
 	    }

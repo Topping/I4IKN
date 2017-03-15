@@ -25,21 +25,32 @@ namespace File_Server
 
 		    switch (bytesAsString)
 		    {
-                case "U":
-                case "u":
-                    FileStream fileReader = new FileStream("/proc/uptime", FileMode.Open);
-		            using (MemoryStream ms = new MemoryStream())
-		            {
-		                fileReader.CopyTo(ms);
-		                Byte[] buffer = ms.ToArray();
-		                _udpServer.Send(buffer, buffer.Length, _remoteIp);
-		            }
+			case "U":
+			case "u":
+				ReadandSend ("/proc/uptime");
                         break;
 
-                case "L":
-                case "l":
+			case "L":
+			case "l":
+				ReadandSend ("/proc/loadavg");
 		            break;
+			default:
+				string errorString = "ERROR!!!!!";
+				Byte[] bytesToSend = Encoding.ASCII.GetBytes (errorString);
+				_udpServer.Send (bytesToSend, bytesToSend.Length, _remoteIp);
+				break;
 		    }
+		}
+
+		private void ReadandSend(string filepath)
+		{
+			FileStream fileReader = new FileStream(filepath, FileMode.Open, FileAccess.Read);
+			using (MemoryStream ms = new MemoryStream())
+			{
+				fileReader.CopyTo(ms);
+				Byte[] buffer = ms.ToArray();
+				_udpServer.Send(buffer, buffer.Length, _remoteIp);
+			}
 		}
 
 
