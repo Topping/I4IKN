@@ -48,18 +48,28 @@ namespace file_server
 			{
 				string filename = LIB.readTextTCP (networkStream);
 				if (File.Exists (filename)) {
-					FileStream fileReader = new FileStream (filename, FileMode.Open, FileAccess.Read, FileShare.ReadWrite);
-					BufferedStream bufferStream = new BufferedStream (fileReader, _bufferSize);
-					LIB.writeTextTCP (networkStream, fileReader.Length.ToString ());
-					do {
-						bufferStream.CopyTo (networkStream);
-					} while (fileReader.Position != fileReader.Length);
+				    try
+				    {
+                        FileStream fileReader = new FileStream(filename, FileMode.Open, FileAccess.Read, FileShare.ReadWrite);
+                        BufferedStream bufferStream = new BufferedStream(fileReader, _bufferSize);
+                        LIB.writeTextTCP(networkStream, fileReader.Length.ToString());
+                        do
+                        {
+                            bufferStream.CopyTo(networkStream);
+                        } while (fileReader.Position != fileReader.Length);
+                    }
+				    catch (IOException e)
+				    {
+				        Console.WriteLine(e.Message);
+                        CloseConnection();
+				        return;
+				    }
+					
 				} else {
 					LIB.writeTextTCP (networkStream, "0");
 				}
 			}
 			CloseConnection ();
-			WaitNewConnection ();
 		}
 
 

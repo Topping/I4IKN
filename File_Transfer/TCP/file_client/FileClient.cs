@@ -61,14 +61,28 @@ namespace file_client
 			serverStream.ReadTimeout = 10;
 			LIB.writeTextTCP (serverStream, _fileOnServer);
 			byte[] buffer = new byte[1000];
-			FileStream fileWriter = new FileStream (_fileDestination, FileMode.Create);
 			int expectedNumOfBytes;
 			int.TryParse(LIB.readTextTCP(serverStream), out expectedNumOfBytes);
 			Console.WriteLine ("ExpectedNumOfBytes :: {0}", expectedNumOfBytes);
 			int totalBytesRead = 0;
 			int thisTransferBytesRead = 0;
-			if (expectedNumOfBytes > 0) {
-				do {
+			if (expectedNumOfBytes > 0)
+			{
+			    FileStream fileWriter = null;
+                try
+			    {
+                    fileWriter = new FileStream(_fileDestination, FileMode.Create);
+                }
+			    catch (DirectoryNotFoundException e)
+			    {
+			        Console.WriteLine(e.Message);
+                    serverStream.Close();
+                    _clientSocket.Close();
+			        return;
+			    }
+                
+                do
+                {
 					thisTransferBytesRead = serverStream.Read (buffer, 0, buffer.Length);
 					if (thisTransferBytesRead == 0)				
 						break;
@@ -76,8 +90,13 @@ namespace file_client
 					fileWriter.Write (buffer, 0, thisTransferBytesRead);
 					totalBytesRead += thisTransferBytesRead;
 				} while(serverStream.DataAvailable || expectedNumOfBytes != totalBytesRead);
+                Console.WriteLine("ClientProgram :: Done reading {0} KB from Network Stream", totalBytesRead / 1000);
+            }
+			else
+			{
+			    Console.WriteLine("File not found on server");
 			}
-			Console.WriteLine ("ClientProgram :: Done reading {0} KB from Network Stream", totalBytesRead / 1000);
+            
 			serverStream.Close ();
 			_clientSocket.Close ();
 		}
