@@ -65,8 +65,7 @@ namespace file_client
 			int.TryParse(LIB.readTextTCP(serverStream), out expectedNumOfBytes);
 			Console.WriteLine ("ExpectedNumOfBytes :: {0}", expectedNumOfBytes);
 			int totalBytesRead = 0;
-			int thisTransferBytesRead = 0;
-			if (expectedNumOfBytes > 0)
+		    if (expectedNumOfBytes > 0)
 			{
 			    FileStream fileWriter = null;
                 try
@@ -83,7 +82,7 @@ namespace file_client
                 
                 do
                 {
-					thisTransferBytesRead = serverStream.Read (buffer, 0, buffer.Length);
+					var thisTransferBytesRead = serverStream.Read (buffer, 0, buffer.Length);
 					if (thisTransferBytesRead == 0)				
 						break;
 					

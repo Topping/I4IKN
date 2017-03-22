@@ -58,7 +58,7 @@ namespace file_server
                             bufferStream.CopyTo(networkStream);
                         } while (fileReader.Position != fileReader.Length);
                     }
-				    catch (IOException e)
+				    catch (System.IO.IOException e)
 				    {
 				        Console.WriteLine(e.Message);
                         CloseConnection();
