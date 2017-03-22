@@ -66,7 +66,16 @@ namespace file_server
 				    }
 					
 				} else {
-					LIB.writeTextTCP (networkStream, "0");
+				    try
+				    {
+
+				    }
+				    catch (System.IO.IOException e)
+				    {
+				        Console.WriteLine(e.Message);
+                        LIB.writeTextTCP(networkStream, "0");
+                    }
+					
 				}
 			}
 			CloseConnection ();
