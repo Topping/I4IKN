@@ -68,12 +68,11 @@ namespace file_server
 				} else {
 				    try
 				    {
-
+						LIB.writeTextTCP(networkStream, "0");
 				    }
 				    catch (System.IO.IOException e)
 				    {
 				        Console.WriteLine(e.Message);
-                        LIB.writeTextTCP(networkStream, "0");
                     }
 					
 				}
