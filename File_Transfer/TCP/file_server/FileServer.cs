@@ -74,11 +74,11 @@ namespace file_server
 				    {
 				        Console.WriteLine(e.Message);
                         LIB.writeTextTCP(networkStream, "0");
-                    }
-					
+                        CloseConnection();
+				        return;
+				    }
 				}
 			}
-			CloseConnection ();
 		}
 
 
