@@ -3,6 +3,22 @@
 Serveren er udviklet til at modtage en tekststreng fra en client. Denne tekststreng indeholder navnet på en fil, som client ønsker at modtage fra serveren. Hvis filen ikke findes på serveren, så sendes en fejl besked til clienten.
 Den ønskede fil skal sendes i segmenter af 1000 bytes ad gangen, indtil filen er overført. \\
 
-Her ses constructoren for serveren \ref{lst:FileServer}
+På listing \ref{lst:FileServer} ses constructoren for serveren. Her sættes hvilken port som serveren skal initialiseres med, samt hvor store segmenter som skal sendes ad gangen. Default er 1000 bytes. 
+
 \lstinputlisting[caption=Code Snippet fra File Server,label=lst:FileServer,firstline=16,lastline=22]{TCP/Code/FileServer.cs}
+
+\subsection{WaitNewConnection}
+
+Det er et krav til serveren, at den kun kan tilgåes af en client ad gangen. Vi har oprettet en metode, som gør at serveren venter på at en client tilgår server. 
+
+\lstinputlisting[caption=Code Snippet af metoden WaitNewConnection,label=lst:FileServerWait,firstline=24,lastline=30]{TCP/Code/FileServer.cs}
+
+\subsection{SendFile}
+
+Under ses koden af vores sendfile. Her henter vi først et filnavn, som modtages fra client. Herefter tjekker vi om filen eksiterer. Hvis den ikke gør, så sender vi en fejl kode tilbage.
+Hvis filen eksiterer, så sender vi filen tilbage. 
+
+Når filen er afsendt, så lukker vi connection. Herefter venter vi på en ny connection, som gør at serveren hele tiden er klar til at sende, når en overførelse er færdig. 
+
+\lstinputlisting[caption=Code Snippet af metoden SendFile,label=lst:FileServerSend,firstline=38,lastline=56]{TCP/Code/FileServer.cs}
 
