@@ -33,7 +33,7 @@ namespace file_server
 			Console.WriteLine (">> Waiting for new connection...");
 			_clientSocket = _serverSocket.AcceptTcpClient ();
 			Console.WriteLine (">> Client with IP: {0} connected to the server", _clientSocket.Client.RemoteEndPoint.ToString());
-			Send_en_fil_FINDETNAVN ();
+			SendFile ();
 		}
 
 		public void CloseConnection()
@@ -42,7 +42,7 @@ namespace file_server
 			Console.WriteLine (">> Connection to client closed.");
 		}
 
-		public void Send_en_fil_FINDETNAVN()
+		public void SendFile()
 		{
 			using (	NetworkStream networkStream = _clientSocket.GetStream() ) 
 			{
@@ -78,24 +78,6 @@ namespace file_server
 				}
 			}
 			CloseConnection ();
-		}
-
-
-		/// <summary>
-		/// Sends the file.
-		/// </summary>
-		/// <param name='fileName'>
-		/// The filename.
-		/// </param>
-		/// <param name='fileSize'>
-		/// The filesize.
-		/// </param>
-		/// <param name='io'>
-		/// Network stream for writing to the client.
-		/// </param>
-		private void sendFile (String fileName, long fileSize, NetworkStream io)
-		{
-			// TO DO Your own code
 		}
 	}
 }
