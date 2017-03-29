@@ -4,13 +4,13 @@ using System.Net;
 using System.Net.Sockets;
 using System.Text;
 
-namespace File_Server
+namespace UDPServer
 {
-	public class File_Server
+	public class UdpServer
 	{
 		private IPEndPoint _remoteIp;
 		private UdpClient _udpServer;
-		public File_Server (int portnumber)
+		public UdpServer (int portnumber)
 		{
 			_udpServer = new UdpClient (portnumber);
 			_remoteIp = new IPEndPoint (IPAddress.Any, 0);

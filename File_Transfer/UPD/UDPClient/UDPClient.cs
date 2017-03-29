@@ -3,16 +3,16 @@ using System.Net;
 using System.Net.Sockets;
 using System.Text;
 
-namespace File_Client
+namespace UDPClient
 {
-	public class File_Client
+	public class UdpClient
 	{
-	    private UdpClient _udpClient;
+	    private System.Net.Sockets.UdpClient _udpClient;
 	    private string _hostIp;
-		public File_Client (string[] args)
+		public UdpClient (string[] args)
 		{
 		    _hostIp = args[0];
-		    _udpClient = new UdpClient(11000);
+            _udpClient = new System.Net.Sockets.UdpClient(11000);
 		}
 
 	    public void SendCommand()

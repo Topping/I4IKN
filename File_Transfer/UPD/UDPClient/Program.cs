@@ -1,10 +1,10 @@
-﻿namespace File_Client
+﻿namespace UDPClient
 {
     public class Program
     {
         public static void Main(string[] args)
         {
-            File_Client fileClient = new File_Client(args);
+            UDPClient.UdpClient fileClient = new UDPClient.UdpClient(args);
             fileClient.SendCommand();
             fileClient.ReceiveAnswer();
         }

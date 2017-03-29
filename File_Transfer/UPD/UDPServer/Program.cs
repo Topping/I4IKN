@@ -1,13 +1,13 @@
-﻿namespace File_Server
+﻿namespace UDPServer
 {
     public class Program
     {
         public static void Main()
         {
-            File_Server fileServer = new File_Server(9000);
+            UDPServer.UdpServer udpServer = new UDPServer.UdpServer(9000);
             while (true)
             {
-                fileServer.ReceiveCommand();
+                udpServer.ReceiveCommand();
             }
             
         }
