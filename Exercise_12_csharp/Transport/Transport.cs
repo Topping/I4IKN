@@ -1,4 +1,5 @@
 using System;
+using System.IO;
 using Linklaget;
 
 /// <summary>
@@ -99,10 +100,10 @@ namespace Transportlaget
 				(ackType ? (byte)_buffer [(int)TransCHKSUM.SEQNO] : (byte)(_buffer [(int)TransCHKSUM.SEQNO] + 1) % 2);
 			ackBuf [(int)TransCHKSUM.TYPE] = (byte)(int)TransType.ACK;
 			_checksum.calcChecksum (ref ackBuf, (int)TransSize.ACKSIZE);
-            /*if(++_errorCount == 3) {
+            if(++_errorCount == 3) {
                 ackBuf[ 1 ]++;
                 Console.WriteLine( "Byte 1 spoiled in ACK-package {0}", _errorCount );
-            }*/
+            }
 		    _link.Send(ackBuf, (int)TransSize.ACKSIZE);
 		}
 
@@ -117,22 +118,31 @@ namespace Transportlaget
 		/// </param>
 		public void Send(byte[] buf, int size)
 		{
-		    Array.Copy(buf, 0, _buffer, 4, size);
-		    _buffer[2] = _seqNo;
-		    _buffer[3] = 0;
+			var dataToSend = new byte[size+4];
+			Array.Copy(buf, 0, dataToSend, 4, size);
+		    dataToSend[2] = _seqNo;
+			dataToSend[3] = 0;
 
-		    _checksum.calcChecksum(ref _buffer, _buffer.Length);
-
+			/*
+			Array.Copy(buf, 0, _buffer, 4, size);
+			_buffer[2] = _seqNo;
+			_buffer[3] = 0;*/
+		    
 		    bool success;
 
 		    do {
-		        /*if (++_errorCount == 3) // Simulate noise in DATA-package
-                {
-		            _buffer[1]++; // Important: Only spoil a checksum-field (buffer[0] or buffer[1])
-		            Console.WriteLine("Noise on send : " + _errorCount);
-		        }*/
-
-		        _link.Send( _buffer, _buffer.Length );
+				_checksum.calcChecksum(ref dataToSend, dataToSend.Length);
+				if (++_errorCount == 3) // Simulate noise in DATA-package
+				{
+					var badData = new byte[dataToSend.Length];
+					Array.Copy(dataToSend, 0, badData, 0, dataToSend.Length);
+					badData[0]++; // Important: Only spoil a checksum-field (buffer[0] or buffer[1])
+					_link.Send(badData, badData.Length);
+					Console.WriteLine ("Bad Data: D" + badData[(int)TransCHKSUM.SEQNO]);
+				}
+				else {
+					_link.Send( dataToSend, dataToSend.Length );
+				}
 		        success = ReceiveAck();
 		    } while (!success);
         }
@@ -162,7 +172,7 @@ namespace Transportlaget
 	                SendAck( true );
 	                success = true;
 	            } else {
-	                Console.WriteLine( "Transport: Checksum nok OK. Sending False Ack: {0}", _seqNo );
+	                Console.WriteLine( "Transport: Checksum nok OK. Sending NACK: {0}", _seqNo );
 	                SendAck( false );
 	            }
 	        }
