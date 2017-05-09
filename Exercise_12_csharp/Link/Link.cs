@@ -34,11 +34,11 @@ namespace Linklaget
 			#if DEBUG
 				if(APP.Equals("FILE_SERVER"))
 				{
-					_serialPort = new SerialPort("/dev/ttySn0",115200,Parity.None,8,StopBits.One);
+					_serialPort = new SerialPort("/dev/ttyS0",115200,Parity.None,8,StopBits.One);
 				}
 				else
 				{
-					_serialPort = new SerialPort("/dev/ttySn1",115200,Parity.None,8,StopBits.One);
+					_serialPort = new SerialPort("/dev/ttyS1",115200,Parity.None,8,StopBits.One);
 				}
 			#else
 				_serialPort = new SerialPort("/dev/ttyS1",115200,Parity.None,8,StopBits.One);

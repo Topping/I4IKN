@@ -72,14 +72,15 @@ namespace Application
 		/// <param name='args'>
 		/// First argument: Filname
 		/// </param>
-		public static void Main (string[] args)
+		public static void Main (string[] argsx)
 		{
+			/*
 			if(args.Length == 0) {
 				Console.WriteLine ("No input argumetns given");
 				return;
-			}
-
-
+			}*/
+			var args = new string[1];
+			args [0] = "/root/Documents/test.txt";
 			new file_client(args);
 		}
 	}
