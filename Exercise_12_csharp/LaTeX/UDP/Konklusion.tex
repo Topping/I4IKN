@@ -1,0 +1,26 @@
+\section{Resultater}
+For at teste løsningen bruges følgende procedure:
+\begin{enumerate}
+    \item Server states på den virtuelle maskine.
+    \item Klienten startes på host maskinen.
+    \item De fire mulige kommandoer testes enkeltvis, samt én ugyldig kommando.
+\end{enumerate}
+
+\subsection{Kommando 'u'}
+Outputtet fra test af kommando 'u' vises herunder:
+\begin{lstlisting}[caption=Konsol output fra windows klient]
+UDPClient.exe 192.168.92.129
+u
+270.62 225.61
+\end{lstlisting}
+
+\subsection{Kommando 'l'}
+Outputtet fra test af kommando 'l' vises herunder:
+\begin{lstlisting}[caption=Konsol output fra windows klient]
+UDPClient.exe 192.168.92.129
+l
+0.44 0.50 0.24 1/413 3014
+\end{lstlisting}
+
+\section{Konklusion}
+UDP server-klient ogaven har vist sig at være en del mere simpel end TCP opgaven, da der ikke skulle tages hensyn til at oprette/nedlægge forbindelserne. Vores løsning tager fint højde for at vise en fejlbesked hvis ikke man bruger en af de godkendte kommandoer, og filernes indhold sendes upåklageligt fra server til klient efter anmodning.

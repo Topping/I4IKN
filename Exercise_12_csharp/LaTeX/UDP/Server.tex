@@ -1,0 +1,26 @@
+\newpage
+\section{Server}
+Serveren skal være iterativ, og kunne håndter en client ad gangen. 
+Der skal modtages en forespørgelse fra client, som sende enten U eller L (upper og lower case ligegyldigt). 
+
+Ved modtagelse af U skal der afsendes filen /proc/uptime.
+Ved modtagelse af L skal der afsendes filen /proc/loadavg. 
+
+\lstinputlisting[caption=UDP Server Constructor, label=ReceiveAnswer, firstline=11,lastline=18]{UDP/Code/File_Server.cs}
+
+\subsection{Modtagelse af forespørgelse}
+
+Her venter vi på at der sker en connection. Når det modtages,så håndter vi de to cases : 
+U for /proc/uptime samt L for /proc/loadavg. Sker ved at vi benytter os af metoden ReadAndSend, og navnet på tekst filen, som forespørges.
+Hvis der modtagelse alt andet, så sendes en fejlbesked. 
+
+
+\lstinputlisting[caption=Forespørgelse, label=Recieve, firstline=20,lastline=42]{UDP/Code/File_Server.cs}
+
+
+\subsection{Afsendelse af forespørgelse}
+
+I denne metode afsendes den forespurgte fil. Koden ses under.
+
+\lstinputlisting[caption=Afsendelse af forespørgelse, label=Recieve, firstline=45,lastline=53]{UDP/Code/File_Server.cs}
+

@@ -1,0 +1,20 @@
+\section{UDP Client}
+UDP klienten er sat til at lytte på port 11000, og sende på port 9000. Når klienten startes kan man indtaste en kommando, afhængig af den information der ønskes fra serveren. \\
+
+\begin{tabular}{r|r}
+\hline
+    Kommando & Svar  \\ \hline
+    U, u & Indhold af /proc/uptime \\ \hline
+    L, l & Indhold af /proc/loadavg \\
+\hline
+\end{tabular}
+\vspace{.5cm}
+
+
+Klienten består af to metoder: SendCommand og ReceiveAnswer. SendCommand på Listing \ref{lst:SendCommand} læser en linje ind fra terminalen, bruger ASCII encoding til at omdanne inputtet til et byte array, og sender dernæst de indtastede bytes.
+
+\lstinputlisting[caption=UDP Client SendCommand,label=lst:SendCommand,firstline=18,lastline=24]{UDP/Code/UDP_Client.cs}
+
+ReceiveAnswer blokkerer indtil der kommer data ind, når der bliver modtaget data gemmes det i et byte array. De modtagne bytes bliver konverteret til en string vha. ASCII encoding, og strengen skrives dernæst til terminalen.
+
+\lstinputlisting[caption=UDP Client ReceiveAnser, label=ReceiveAnswer, firstline=26,lastline=32]{UDP/Code/UDP_Client.cs}

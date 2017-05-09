@@ -1,0 +1,33 @@
+\chapter{Linklaget}
+I linklaget implementeres den SLIP protokol som der vil blive kommunikkeret med i opgaven. Protokollen sørger for at erstatte visse karakterer i den data man ønsker sendt. Desuden omkranses dataen af et start og stop byte, repræsenteret af karakteren 'A'. Reglerne for erstatning vises i tabellen nedenfor.
+
+\vspace{0.3cm}
+\begin{table}[H]
+	\centering
+	\begin{tabular}{| l | l |}
+		\hline
+		\textbf{Original Karakter} & \textbf{Erstatning} \\ \hline
+		A & BC \\ \hline
+		B & BD \\
+		\hline
+	\end{tabular}
+	\caption{Regler for SLIP protokol karakter erstatning}	
+\end{table}
+
+\section{Encoding}\label{sec:encoding}
+Når dataen skal encodes er det vigtigt at tage hensyn til at eventuelle forekomster af A eller B vil fylde dobbelt så meget i det encodede array, desuden vil start og stop byte også optage plads i arrayet.
+
+Vi håndterer dette ved at tælle hvor mange forekomster der er af henholdsvis A og B, hvorefter denne optælling tilføjes til den givne størrelse. Til sidst tilføjes 2 til størrelsen for at give plads til start- og stopbyte. Optælling af karakterer vises i listing \ref{lst:counting}
+
+\lstinputlisting[caption=Optælling af karakterer til erstatning,label=lst:counting,firstline=61,lastline=63]{Link/Link.cs}
+
+Erstatning af de enkelte karakterer gøres ved at løbe igennem det byte array der skal sendes, og benytte et switch-case statement til at få indsat de rigtige karaktere i det array der skal transmitteres. Et eksempel på encoding vises i listing \ref{lst:encode}
+
+\lstinputlisting[caption=Eksempel på erstatning af karakteren 'A',label=lst:encode,firstline=70,lastline=76]{Link/Link.cs}
+
+\section{Decoding}
+Når modtaget data skal dekodes gælder de samme regler for erstatning, her skal de erstattede karaktere omdannes til de originale. Dette gøres ved først at indlæse en hel frame, hvorefter denne dekodes. Som delimiter for en frame bruges start- og stopbyte fra encoding: Byte værdien for karakteren 'A'.
+
+Når beskedden skal dekodes skal dataen gennemsøges for forekomster af karakteren 'B', hvis denne findes undersøges det om den næste karakter er 'C' eller 'D'. Hvis dette er tilfældet gemmes skrives den originale karakter, henholdsvis 'A' eller 'B', til modtager arrayet. Et eksempel på dekodning vises i listing \ref{lst:decode}
+\newpage
+\lstinputlisting[caption=Erstatning af 'BC' med 'A',label=lst:decode,firstline=129,lastline=133]{Link/Link.cs}
