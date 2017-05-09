@@ -31,19 +31,19 @@ namespace Linklaget
 		public Link (int BUFSIZE, string APP)
 		{
 			// Create a new SerialPort object with default settings.
-			#if DEBUG
-				if(APP.Equals("FILE_SERVER"))
-				{
-					_serialPort = new SerialPort("/dev/ttyS0",115200,Parity.None,8,StopBits.One);
-				}
-				else
-				{
-					_serialPort = new SerialPort("/dev/ttyS1",115200,Parity.None,8,StopBits.One);
-				}
-			#else
-				_serialPort = new SerialPort("/dev/ttyS1",115200,Parity.None,8,StopBits.One);
-			#endif
-			if(!_serialPort.IsOpen)
+			//#if DEBUG
+				//if(APP.Equals("FILE_SERVER"))
+				//{
+				//	_serialPort = new SerialPort("/dev/ttyS0",115200,Parity.None,8,StopBits.One);
+				//}
+				//else
+				//{
+				//	_serialPort = new SerialPort("/dev/ttyS1",115200,Parity.None,8,StopBits.One);
+				//}
+            //#else
+            _serialPort = new SerialPort("/dev/ttyS1", 115200, Parity.None, 8, StopBits.One);
+            //#endif
+            if (!_serialPort.IsOpen)
 				_serialPort.Open();
 
 			_buffer = new byte[(BUFSIZE*2)];
