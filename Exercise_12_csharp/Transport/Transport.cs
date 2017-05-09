@@ -145,9 +145,11 @@ namespace Transportlaget
 	    /// </param>
 	    public int Receive( ref byte[] buf ) {
 	        var success = false;
-	        var receivedBytes = _link.Receive( ref _buffer );
+			var receivedBytes = 0;
 
 	        while ( !success ) {
+				receivedBytes = _link.Receive( ref _buffer );
+
 	            if ( _buffer[ (int) TransCHKSUM.SEQNO ] == _oldSeqNo ) {
 	                SendAck( true );
 	                return 0;
