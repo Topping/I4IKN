@@ -99,10 +99,10 @@ namespace Transportlaget
 				(ackType ? (byte)_buffer [(int)TransCHKSUM.SEQNO] : (byte)(_buffer [(int)TransCHKSUM.SEQNO] + 1) % 2);
 			ackBuf [(int)TransCHKSUM.TYPE] = (byte)(int)TransType.ACK;
 			_checksum.calcChecksum (ref ackBuf, (int)TransSize.ACKSIZE);
-            if(++_errorCount == 3) {
+            /*if(++_errorCount == 3) {
                 ackBuf[ 1 ]++;
                 Console.WriteLine( "Byte 1 spoiled in ACK-package {0}", _errorCount );
-            }
+            }*/
 		    _link.Send(ackBuf, (int)TransSize.ACKSIZE);
 		}
 
@@ -126,11 +126,11 @@ namespace Transportlaget
 		    bool success;
 
 		    do {
-		        if (++_errorCount == 3) // Simulate noise in DATA-package
+		        /*if (++_errorCount == 3) // Simulate noise in DATA-package
                 {
 		            _buffer[1]++; // Important: Only spoil a checksum-field (buffer[0] or buffer[1])
 		            Console.WriteLine("Noise on send : " + _errorCount);
-		        }
+		        }*/
 
 		        _link.Send( _buffer, _buffer.Length );
 		        success = ReceiveAck();

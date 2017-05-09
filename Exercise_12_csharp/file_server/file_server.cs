@@ -29,13 +29,13 @@ namespace Application
 			filePath = filePath.TrimEnd ('\0');
 
 			var fileName = LIB.extractFileName (filePath);
-			var fileSize = LIB.check_File_Exists (fileName);
-			Console.WriteLine ("Found file named: {0} \n File Size: {1}, fileName, fileSize");
+			var fileSize = LIB.check_File_Exists (filePath);
 
 			if (fileSize <= 0) {
 				Console.WriteLine ("File not found. Closing connection");
 			} else {
-				sendFile (fileName, fileSize, transport);
+				Console.WriteLine ("Found file named: {0} \n File Size: {1}", fileName, fileSize);
+				sendFile (filePath, fileSize, transport);
 			}
 			Console.WriteLine ("File transfer done. Closing connection");
 		}
@@ -71,7 +71,7 @@ namespace Application
 				// Hvis de BUFSIZE er større end antallet af resterende bytes
 				// Sørges for at der kun sendes de resterende bytes.
 				int lengthOfPacket;
-				if (streamLength < BUFSIZE) {
+				if (streamLength > BUFSIZE) {
 					lengthOfPacket = BUFSIZE;
 					streamLength -= lengthOfPacket;
 				} else {
