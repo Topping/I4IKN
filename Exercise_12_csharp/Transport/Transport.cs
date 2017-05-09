@@ -9,57 +9,56 @@ namespace Transportlaget
 	/// <summary>
 	/// Transport.
 	/// </summary>
-	public class Transport
-	{
-		/// <summary>
-		/// The link.
+	public class Transport {
+	    /// <summary>
+		/// The _link.
 		/// </summary>
-		private Link link;
+		private Link _link;
 		/// <summary>
-		/// The 1' complements checksum.
+		/// The 1' complements _checksum.
 		/// </summary>
-		private Checksum checksum;
+		private Checksum _checksum;
 		/// <summary>
-		/// The buffer.
+		/// The _buffer.
 		/// </summary>
-		private byte[] buffer;
+		private byte[] _buffer;
 		/// <summary>
 		/// The seq no.
 		/// </summary>
-		private byte seqNo;
+		private byte _seqNo;
 		/// <summary>
 		/// The old_seq no.
 		/// </summary>
-		private byte old_seqNo;
+		private byte _oldSeqNo;
 		/// <summary>
 		/// The error count.
 		/// </summary>
-		private int errorCount;
+		private int _errorCount;
 		/// <summary>
 		/// The DEFAULT_SEQNO.
 		/// </summary>
 		private const int DEFAULT_SEQNO = 2;
 		/// <summary>
-		/// The data received. True = received data in receiveAck, False = not received data in receiveAck
+		/// The data received. True = received data in ReceiveAck, False = not received data in ReceiveAck
 		/// </summary>
-		private bool dataReceived;
+		private bool _dataReceived;
 		/// <summary>
 		/// The number of data the recveived.
 		/// </summary>
-		private int recvSize = 0;
+		private int _recvSize = 0;
 
 		/// <summary>
 		/// Initializes a new instance of the <see cref="Transport"/> class.
 		/// </summary>
 		public Transport (int BUFSIZE, string APP)
 		{
-			link = new Link(BUFSIZE+(int)TransSize.ACKSIZE, APP);
-			checksum = new Checksum();
-			buffer = new byte[BUFSIZE+(int)TransSize.ACKSIZE];
-			seqNo = 0;
-			old_seqNo = DEFAULT_SEQNO;
-			errorCount = 0;
-			dataReceived = false;
+			_link = new Link(BUFSIZE+(int)TransSize.ACKSIZE, APP);
+			_checksum = new Checksum();
+			_buffer = new byte[BUFSIZE+(int)TransSize.ACKSIZE];
+			_seqNo = 0;
+			_oldSeqNo = DEFAULT_SEQNO;
+			_errorCount = 0;
+			_dataReceived = false;
 		}
 
 		/// <summary>
@@ -68,20 +67,20 @@ namespace Transportlaget
 		/// <returns>
 		/// The ack.
 		/// </returns>
-		private bool receiveAck()
+		private bool ReceiveAck()
 		{
-			recvSize = link.receive(ref buffer);
-			dataReceived = true;
+			_recvSize = _link.Receive(ref _buffer);
+			_dataReceived = true;
 
-			if (recvSize == (int)TransSize.ACKSIZE) {
-				dataReceived = false;
-				if (!checksum.checkChecksum (buffer, (int)TransSize.ACKSIZE) ||
-				  buffer [(int)TransCHKSUM.SEQNO] != seqNo ||
-				  buffer [(int)TransCHKSUM.TYPE] != (int)TransType.ACK)
+			if (_recvSize == (int)TransSize.ACKSIZE) {
+				_dataReceived = false;
+				if (!_checksum.checkChecksum (_buffer, (int)TransSize.ACKSIZE) ||
+				  _buffer [(int)TransCHKSUM.SEQNO] != _seqNo ||
+				  _buffer [(int)TransCHKSUM.TYPE] != (int)TransType.ACK)
 				{
 					return false;
 				}
-				seqNo = (byte)((buffer[(int)TransCHKSUM.SEQNO] + 1) % 2);
+				_seqNo = (byte)((_buffer[(int)TransCHKSUM.SEQNO] + 1) % 2);
 			}
  
 			return true;
@@ -93,18 +92,22 @@ namespace Transportlaget
 		/// <param name='ackType'>
 		/// Ack type.
 		/// </param>
-		private void sendAck (bool ackType)
+		private void SendAck (bool ackType)
 		{
 			byte[] ackBuf = new byte[(int)TransSize.ACKSIZE];
 			ackBuf [(int)TransCHKSUM.SEQNO] = (byte)
-				(ackType ? (byte)buffer [(int)TransCHKSUM.SEQNO] : (byte)(buffer [(int)TransCHKSUM.SEQNO] + 1) % 2);
+				(ackType ? (byte)_buffer [(int)TransCHKSUM.SEQNO] : (byte)(_buffer [(int)TransCHKSUM.SEQNO] + 1) % 2);
 			ackBuf [(int)TransCHKSUM.TYPE] = (byte)(int)TransType.ACK;
-			checksum.calcChecksum (ref ackBuf, (int)TransSize.ACKSIZE);
-			link.send(ackBuf, (int)TransSize.ACKSIZE);
+			_checksum.calcChecksum (ref ackBuf, (int)TransSize.ACKSIZE);
+            if(++_errorCount == 3) {
+                ackBuf[ 1 ]++;
+                Console.WriteLine( "Byte 1 spoiled in ACK-package {0}", _errorCount );
+            }
+		    _link.Send(ackBuf, (int)TransSize.ACKSIZE);
 		}
 
 		/// <summary>
-		/// Send the specified buffer and size.
+		/// Send the specified _buffer and size.
 		/// </summary>
 		/// <param name='buffer'>
 		/// Buffer.
@@ -112,20 +115,57 @@ namespace Transportlaget
 		/// <param name='size'>
 		/// Size.
 		/// </param>
-		public void send(byte[] buf, int size)
+		public void Send(byte[] buf, int size)
 		{
-			// TO DO Your own code
-		}
+		    Array.Copy(buf, 0, _buffer, 4, size);
+		    _buffer[2] = _seqNo;
+		    _buffer[3] = 0;
 
-		/// <summary>
-		/// Receive the specified buffer.
-		/// </summary>
-		/// <param name='buffer'>
-		/// Buffer.
-		/// </param>
-		public int receive (ref byte[] buf)
-		{
-			// TO DO Your own code
-		}
+		    _checksum.calcChecksum(ref _buffer, _buffer.Length);
+
+		    bool success;
+
+		    do {
+		        if (++_errorCount == 3) // Simulate noise in DATA-package
+                {
+		            _buffer[1]++; // Important: Only spoil a checksum-field (buffer[0] or buffer[1])
+		            Console.WriteLine("Noise on send : " + _errorCount);
+		        }
+
+		        _link.Send( _buffer, _buffer.Length );
+		        success = ReceiveAck();
+		    } while (!success);
+        }
+
+	    /// <summary>
+	    /// Receive the specified _buffer.
+	    /// </summary>
+	    /// <param name='buf'>
+	    /// Buffer.
+	    /// </param>
+	    public int Receive( ref byte[] buf ) {
+	        var success = false;
+	        var receivedBytes = _link.Receive( ref _buffer );
+
+	        while ( !success ) {
+	            if ( _buffer[ (int) TransCHKSUM.SEQNO ] == _oldSeqNo ) {
+	                SendAck( true );
+	                return 0;
+	            }
+
+	            if ( _checksum.checkChecksum( _buffer, receivedBytes ) ) {
+	                Array.Copy( _buffer, 4, buf, 0, receivedBytes - 4 );
+
+	                _oldSeqNo = _buffer[ (int) TransCHKSUM.SEQNO ];
+	                SendAck( true );
+	                success = true;
+	            } else {
+	                Console.WriteLine( "Transport: Checksum nok OK. Sending False Ack: {0}", _seqNo );
+	                SendAck( false );
+	            }
+	        }
+
+	        return receivedBytes - 4;
+	    }
 	}
 }
