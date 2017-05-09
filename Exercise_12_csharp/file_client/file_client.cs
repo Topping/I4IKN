@@ -28,7 +28,9 @@ namespace Application
 		/// </param>
 	    private file_client(String[] args)
 	    {
-	    	// TO DO Your own code
+			Console.WriteLine ("FileClient Started. Opening file: {0}", args[0]);
+			receiveFile(args[0], new Transport(BUFSIZE, APP));
+			Console.WriteLine ("FileClient done.");
 	    }
 
 		/// <summary>
@@ -40,9 +42,28 @@ namespace Application
 		/// <param name='transport'>
 		/// Transportlaget
 		/// </param>
-		private void receiveFile (String fileName, Transport transport)
+		private void receiveFile (String filePath, Transport transport)
 		{
-			// TO DO Your own code
+			var fileToReceive = Encoding.ASCII.GetBytes (filePath);
+			transport.Send (fileToReceive, fileToReceive.Length);
+			var bytesToReceive = new byte[BUFSIZE];
+			transport.Receive (ref bytesToReceive);
+
+			var fileName = LIB.extractFileName(filePath);
+			var file = new FileStream (fileName, FileMode.OpenOrCreate, FileAccess.Write);
+
+			var fileSize = BitConverter.ToInt32 (bytesToReceive, 0);
+			var receivedData = new byte[BUFSIZE];
+
+			while(fileSize > 0)
+			{
+				var receivedBytes = transport.Receive(ref receivedData);
+
+				file.Write (receivedData, 0, receivedBytes);
+				fileSize -= receivedBytes;
+			}
+
+			file.Close ();
 		}
 
 		/// <summary>
@@ -53,6 +74,12 @@ namespace Application
 		/// </param>
 		public static void Main (string[] args)
 		{
+			if(args.Length == 0) {
+				Console.WriteLine ("No input argumetns given");
+				return;
+			}
+
+
 			new file_client(args);
 		}
 	}
