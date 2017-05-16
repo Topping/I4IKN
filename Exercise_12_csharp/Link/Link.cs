@@ -49,7 +49,7 @@ namespace Linklaget
 			_buffer = new byte[(BUFSIZE*2)];
 
 			// Uncomment the next line to use timeout
-			//_serialPort.ReadTimeout = 500;
+			_serialPort.ReadTimeout = 500;
 
 			_serialPort.DiscardInBuffer ();
 			_serialPort.DiscardOutBuffer ();

@@ -44,6 +44,8 @@ namespace Application
 		/// </param>
 		private void receiveFile (String filePath, Transport transport)
 		{
+			try {
+				
 			var fileToReceive = Encoding.ASCII.GetBytes (filePath);
 			transport.Send (fileToReceive, fileToReceive.Length);
 			var bytesToReceive = new byte[BUFSIZE];
@@ -64,6 +66,11 @@ namespace Application
 			}
 
 			file.Close ();
+			}
+			catch(System.TimeoutException e) {
+				Console.WriteLine ("System has timed out");
+
+			}
 		}
 
 		/// <summary>
@@ -72,15 +79,13 @@ namespace Application
 		/// <param name='args'>
 		/// First argument: Filname
 		/// </param>
-		public static void Main (string[] argsx)
+		public static void Main (string[] args)
 		{
-			/*
+			
 			if(args.Length == 0) {
 				Console.WriteLine ("No input argumetns given");
 				return;
-			}*/
-			var args = new string[1];
-			args [0] = "/root/Documents/test.txt";
+			}
 			new file_client(args);
 		}
 	}

@@ -122,11 +122,6 @@ namespace Transportlaget
 			Array.Copy(buf, 0, dataToSend, 4, size);
 		    dataToSend[2] = _seqNo;
 			dataToSend[3] = 0;
-
-			/*
-			Array.Copy(buf, 0, _buffer, 4, size);
-			_buffer[2] = _seqNo;
-			_buffer[3] = 0;*/
 		    
 		    bool success;
 
@@ -145,6 +140,7 @@ namespace Transportlaget
 				}
 		        success = ReceiveAck();
 		    } while (!success);
+			_oldSeqNo = DEFAULT_SEQNO;
         }
 
 	    /// <summary>
@@ -164,7 +160,6 @@ namespace Transportlaget
 	                SendAck( true );
 	                return 0;
 	            }
-
 	            if ( _checksum.checkChecksum( _buffer, receivedBytes ) ) {
 	                Array.Copy( _buffer, 4, buf, 0, receivedBytes - 4 );
 
